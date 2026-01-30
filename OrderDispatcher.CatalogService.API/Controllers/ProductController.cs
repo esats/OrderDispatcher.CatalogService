@@ -35,8 +35,6 @@ namespace OrderDispatcher.CatalogService.API.Controllers
                     Product entity = _product.GetT(x => x.Id == dto.Id);
                     entity.Name = dto.Name;
                     entity.Description = dto.Description;
-                    entity.Price = dto.Price;
-                    entity.Stock = dto.Stock;
                     entity.BrandId = dto.BrandId;
                     entity.CategoryId = dto.CategoryId;
                     entity.ImageMasterId = dto.ImageMasterId;
@@ -50,8 +48,6 @@ namespace OrderDispatcher.CatalogService.API.Controllers
                     {
                         Name = dto.Name,
                         Description = dto.Description,
-                        Price = dto.Price,
-                        Stock = dto.Stock,
                         BrandId = dto.BrandId,
                         CategoryId = dto.CategoryId,
                         ImageMasterId = dto.ImageMasterId,
@@ -76,13 +72,14 @@ namespace OrderDispatcher.CatalogService.API.Controllers
 
         [HttpGet]
         [Route("List")]
-        public async Task<List<ProductDto>> List()
+        public async Task<List<ProductDto>> List(string storeId)
         {
             List<ProductDto> list = new List<ProductDto>();
-
+            // store göre yap
             try
             {
                 var allProducts = await _product.GetListAsync(x => x.IsActive);
+                //var allProducts = await _product.GetListAsync(x => x.IsActive && x.CreatedBy == storeId);
                 foreach (var entity in allProducts)
                 {
                     ProductDto model = new ProductDto()
@@ -90,8 +87,7 @@ namespace OrderDispatcher.CatalogService.API.Controllers
                         Id = entity.Id,
                         Name = entity.Name,
                         Description = entity.Description,
-                        Price = entity.Price,
-                        Stock = entity.Stock,
+                        SKU = entity.SKU,
                         BrandId = entity.BrandId,
                         CategoryId = entity.CategoryId,
                         ImageMasterId = entity.ImageMasterId
@@ -119,8 +115,7 @@ namespace OrderDispatcher.CatalogService.API.Controllers
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
-                Price = product.Price,
-                Stock = product.Stock,
+                SKU = product.SKU,
                 BrandId = product.BrandId,
                 CategoryId = product.CategoryId,
                 ImageMasterId = product.ImageMasterId
