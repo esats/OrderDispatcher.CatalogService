@@ -35,6 +35,7 @@ namespace OrderDispatcher.CatalogService.API.Controllers
                     Product entity = _product.GetT(x => x.Id == dto.Id);
                     entity.Name = dto.Name;
                     entity.Description = dto.Description;
+                    entity.SKU = dto.SKU;
                     entity.BrandId = dto.BrandId;
                     entity.CategoryId = dto.CategoryId;
                     entity.ImageMasterId = dto.ImageMasterId;
@@ -48,6 +49,7 @@ namespace OrderDispatcher.CatalogService.API.Controllers
                     {
                         Name = dto.Name,
                         Description = dto.Description,
+                        SKU = dto.SKU,
                         BrandId = dto.BrandId,
                         CategoryId = dto.CategoryId,
                         ImageMasterId = dto.ImageMasterId,
@@ -72,14 +74,13 @@ namespace OrderDispatcher.CatalogService.API.Controllers
 
         [HttpGet]
         [Route("List")]
-        public async Task<List<ProductDto>> List(string storeId)
+        public async Task<List<ProductDto>> List()
         {
             List<ProductDto> list = new List<ProductDto>();
             // store göre yap
             try
             {
                 var allProducts = await _product.GetListAsync(x => x.IsActive);
-                //var allProducts = await _product.GetListAsync(x => x.IsActive && x.CreatedBy == storeId);
                 foreach (var entity in allProducts)
                 {
                     ProductDto model = new ProductDto()

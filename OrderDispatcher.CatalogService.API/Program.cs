@@ -43,6 +43,7 @@ builder.Services.AddDbContext<CatalogServiceDBContext>(options =>
 builder.Services.AddScoped<ICategory, EfCategory>();
 builder.Services.AddScoped<IBrand, EfBrand>();
 builder.Services.AddScoped<IProduct, EfProduct>();
+builder.Services.AddScoped<IStoreProduct, EfStoreProduct>();
 
 var app = builder.Build();
 

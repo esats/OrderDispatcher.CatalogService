@@ -8,6 +8,7 @@ namespace OrderDispatcher.CatalogService.Dal.Concrete.EntityFramework
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<StoreProduct> StoreProducts { get; set; }
 
         public CatalogServiceDBContext(DbContextOptions<CatalogServiceDBContext> options) : base(options)
         {
