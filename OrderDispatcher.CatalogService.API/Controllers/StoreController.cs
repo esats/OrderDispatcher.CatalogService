@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderDispatcher.CatalogService.API.Base;
 using OrderDispatcher.CatalogService.API.Models;
 using OrderDispatcher.CatalogService.Dal.Abstract;
-using OrderDispatcher.CatalogService.Dal.Concrete.EntityFramework;
 using OrderDispatcher.CatalogService.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,10 +19,12 @@ namespace OrderDispatcher.CatalogService.API.Controllers
     public class StoreController : APIControllerBase
     {
         private readonly IStoreProduct _storeProduct;
+        private readonly IProduct _product;
 
-        public StoreController(IStoreProduct storeProduct)
+        public StoreController(IStoreProduct storeProduct, IProduct product)
         {
             _storeProduct = storeProduct;
+            _product = product;
         }
 
         [HttpPost]
@@ -150,23 +151,36 @@ namespace OrderDispatcher.CatalogService.API.Controllers
 
         [HttpGet]
         [Route("List")]
-        public async Task<List<ProductDto>> List(string storeId)
+        public async Task<List<StoreProductListDto>> List(string storeId)
         {
-            List<ProductDto> list = new List<ProductDto>();
+            List<StoreProductListDto> list = new List<StoreProductListDto>();
             try
             {
-                var allProducts = await _storeProduct.GetListAsync(x => x.IsActive);
-                foreach (var entity in allProducts)
+                var storeProducts = await _storeProduct.GetListAsync(x => x.IsActive && x.StoreId == storeId);
+                if (storeProducts.Count == 0)
                 {
-                    ProductDto model = new ProductDto()
+                    return list;
+                }
+
+                var skuList = storeProducts.Select(x => x.SKU).Distinct().ToList();
+                var products = await _product.GetListAsync(x => x.IsActive && skuList.Contains(x.SKU));
+
+                var joined = from storeProduct in storeProducts
+                             join product in products on storeProduct.SKU equals product.SKU
+                             select new { storeProduct, product };
+
+                foreach (var row in joined)
+                {
+                    StoreProductListDto model = new StoreProductListDto()
                     {
-                        Id = entity.Id,
-                        Name = entity.Name,
-                        Description = entity.Description,
-                        SKU = entity.SKU,
-                        BrandId = entity.BrandId,
-                        CategoryId = entity.CategoryId,
-                        ImageMasterId = entity.ImageMasterId
+                        Name = row.product.Name,
+                        Description = row.product.Description,
+                        Price = row.storeProduct.Price,
+                        Stock = row.storeProduct.Stock,
+                        BrandId = row.product.BrandId,
+                        CategoryId = row.product.CategoryId,
+                        ImageMasterId = row.product.ImageMasterId,
+                        Order = 0
                     };
                     list.Add(model);
                 }
