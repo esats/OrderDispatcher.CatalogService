@@ -173,6 +173,7 @@ namespace OrderDispatcher.CatalogService.API.Controllers
                 {
                     StoreProductListDto model = new StoreProductListDto()
                     {
+                        Id = row.product.Id,
                         Name = row.product.Name,
                         Description = row.product.Description,
                         Price = row.storeProduct.Price,
@@ -180,6 +181,7 @@ namespace OrderDispatcher.CatalogService.API.Controllers
                         BrandId = row.product.BrandId,
                         CategoryId = row.product.CategoryId,
                         ImageMasterId = row.product.ImageMasterId,
+                        SKU = row.product.SKU,
                         Order = 0
                     };
                     list.Add(model);

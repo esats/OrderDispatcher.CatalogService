@@ -77,7 +77,7 @@ namespace OrderDispatcher.CatalogService.API.Controllers
         public async Task<List<ProductDto>> List()
         {
             List<ProductDto> list = new List<ProductDto>();
-            // store göre yap
+     
             try
             {
                 var allProducts = await _product.GetListAsync(x => x.IsActive);
@@ -104,6 +104,38 @@ namespace OrderDispatcher.CatalogService.API.Controllers
             return list;
         }
 
+        [HttpPost]
+        [Route("ListByIds")]
+        public async Task<List<ProductDto>> List([FromBody] IReadOnlyCollection<int> productIds)
+        {
+            List<ProductDto> list = new List<ProductDto>();
+          
+            try
+            {
+                var allProducts = await _product.GetListAsync(x => x.IsActive && productIds.Contains(x.Id));
+                foreach (var entity in allProducts)
+                {
+                    ProductDto model = new ProductDto()
+                    {
+                        Id = entity.Id,
+                        Name = entity.Name,
+                        Description = entity.Description,
+                        SKU = entity.SKU,
+                        BrandId = entity.BrandId,
+                        CategoryId = entity.CategoryId,
+                        ImageMasterId = entity.ImageMasterId
+                    };
+                    list.Add(model);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return list;
+        }
+        
         [HttpGet]
         [Route("GetOne/{id}")]
         [AllowAnonymous]
