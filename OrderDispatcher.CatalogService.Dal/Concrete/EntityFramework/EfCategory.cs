@@ -10,6 +10,6 @@ namespace OrderDispatcher.CatalogService.Dal.Concrete.EntityFramework
 {
     public class EfCategory : EfEntityRepositoryBase<Category, CatalogServiceDBContext>, ICategory
     {
-
+        public EfCategory(CatalogServiceDBContext context) : base(context) { }
     }
 }

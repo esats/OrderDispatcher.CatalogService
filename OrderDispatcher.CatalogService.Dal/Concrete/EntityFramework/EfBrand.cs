@@ -6,6 +6,6 @@ namespace OrderDispatcher.CatalogService.Dal.Concrete.EntityFramework
 {
     public class EfBrand : EfEntityRepositoryBase<Brand, CatalogServiceDBContext>, IBrand
     {
-
+        public EfBrand(CatalogServiceDBContext context) : base(context) { }
     }
 }

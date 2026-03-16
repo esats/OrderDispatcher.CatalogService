@@ -6,6 +6,6 @@ namespace OrderDispatcher.CatalogService.Dal.Concrete.EntityFramework
 {
     public class EfProduct : EfEntityRepositoryBase<Product, CatalogServiceDBContext>, IProduct
     {
-
+        public EfProduct(CatalogServiceDBContext context) : base(context) { }
     }
 }
